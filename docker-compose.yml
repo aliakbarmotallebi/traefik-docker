@@ -1,4 +1,3 @@
-
 services:
   traefik:
     image: "traefik:v2.10"
@@ -9,6 +8,7 @@ services:
       - "443:443"
     command:
       - "--api.dashboard=true"
+      - "--api.insecure=false"
       - "--providers.docker=true"
       - "--metrics.prometheus=true"
       - "--metrics.prometheus.entryPoint=websecure"
@@ -17,9 +17,15 @@ services:
       - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
       - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
       - "--providers.docker.exposedbydefault=false"
-      - "--certificatesresolvers.myresolver.acme.email=info@raxil.click"
-      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
-      - "--certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=web"
+      - "--certificatesresolvers.traefik-app.acme.email=info@raxil.click"
+      - "--certificatesresolvers.traefik-app.acme.storage=/letsencrypt/acme.json"
+      - "--certificatesresolvers.traefik-app.acme.httpchallenge.entrypoint=web"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik.rule=Host(`traefik.raxil.click`)"
+      - "traefik.http.routers.traefik.entrypoints=websecure"
+      - "traefik.http.routers.traefik.service=api@internal"
+      - "traefik.http.routers.traefik.tls.certresolver=traefik-app"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
       - "./letsencrypt:/letsencrypt"
