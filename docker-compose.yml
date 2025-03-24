@@ -1,3 +1,7 @@
+networks:
+  web:
+    external: true
+
 services:
   traefik:
     image: "traefik:v2.10"
@@ -32,6 +36,4 @@ services:
     networks:
       - web
 
-networks:
-  web:
-    external: true
+
