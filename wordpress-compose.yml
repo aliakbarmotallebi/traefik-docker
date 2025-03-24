@@ -1,46 +1,42 @@
-version: '3.8'
-
 services:
   db:
     image: mariadb:10.6.4-focal
     command: '--default-authentication-plugin=mysql_native_password'
     volumes:
-      - db_data:/var/lib/mysql
+    - db_data:/var/lib/mysql
     restart: always
     environment:
-      - MYSQL_ROOT_PASSWORD=somewordpress
-      - MYSQL_DATABASE=wordpress
-      - MYSQL_USER=wordpress
-      - MYSQL_PASSWORD=wordpress
+    - MYSQL_ROOT_PASSWORD=somewordpress
+    - MYSQL_DATABASE=wordpress
+    - MYSQL_USER=wordpress
+    - MYSQL_PASSWORD=wordpress
     expose:
-      - 3306
-      - 33060
+    - 3306
+    - 33060
     networks:
-      - wordpress_network
+    - wordpress_network
 
   wordpress:
     image: wordpress:latest
     restart: always
     environment:
-      - WORDPRESS_DB_HOST=db
-      - WORDPRESS_DB_USER=wordpress
-      - WORDPRESS_DB_PASSWORD=wordpress
-      - WORDPRESS_DB_NAME=wordpress
+    - WORDPRESS_DB_HOST=db
+    - WORDPRESS_DB_USER=wordpress
+    - WORDPRESS_DB_PASSWORD=wordpress
+    - WORDPRESS_DB_NAME=wordpress
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.wordpress.rule=Host(`wordpress.raxil.click`)"
-      - "traefik.http.routers.wordpress.entrypoints=websecure"
-      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
-      - "traefik.http.routers.wordpress.middlewares=redirect-to-https@docker"
-      - "traefik.http.routers.wordpress-secured.tls=true"
-      - "traefik.http.routers.wordpress-secured.tls.certresolver=traefikApp"
-      - "traefik.http.services.wordpress.loadbalancer.server.port=80"
+    - "traefik.http.routers.blog.rule=Host(`blog.raxil.click`)"
+    - "traefik.http.routers.blog.entrypoints=websecure"
+    - "traefik.http.routers.blog.tls=true"
+    - "traefik.docker.network=web"
+    - "traefik.http.routers.website2.tls.certresolver=traefikـapp"
     networks:
-      - wordpress_network
-      - web
+    - wordpress_network
+    - web
 
 volumes:
   db_data:
+
 
 networks:
   wordpress_network:
