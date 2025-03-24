@@ -1,0 +1,31 @@
+
+services:
+  traefik:
+    image: "traefik:v2.10"
+    container_name: "traefik"
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    command:
+      - "--api.dashboard=true"
+      - "--providers.docker=true"
+      - "--metrics.prometheus=true"
+      - "--metrics.prometheus.entryPoint=websecure"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
+      - "--providers.docker.exposedbydefault=false"
+      - "--certificatesresolvers.myresolver.acme.email=info@raxil.click"
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+      - "--certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=web"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./letsencrypt:/letsencrypt"
+    networks:
+      - web
+
+networks:
+  web:
+    external: true
