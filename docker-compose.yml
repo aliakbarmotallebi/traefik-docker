@@ -1,5 +1,5 @@
 networks:
-    search:
+    web:
         external: true
         name: web
 services:
