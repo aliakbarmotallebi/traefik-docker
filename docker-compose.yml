@@ -1,7 +1,7 @@
 networks:
-  web:
-    external: true
-
+    search:
+        external: true
+        name: web
 services:
   traefik:
     image: "traefik:v2.10"
